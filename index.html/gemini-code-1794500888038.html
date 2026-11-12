@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASH BINGO - ኢትዮ ቢንጎ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#fffbeb', 100: '#fef3c7', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e', 900: '#78350f', 950: '#451a03' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Noto+Sans+Ethiopic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', 'Noto Sans Ethiopic', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
+        .bingo-ball-pulse { animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.85; transform: scale(1.05); } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-24 selection:bg-brand-500 selection:text-white">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchNavTab('home')">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 to-amber-400 flex items-center justify-center shadow-lg shadow-brand-500/30">
+                    <i class="fa-solid fa-bolt-lightning text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black tracking-wider bg-gradient-to-r from-amber-400 via-brand-500 to-amber-200 bg-clip-text text-transparent">ASH BINGO</h1>
+                    <p class="text-xs text-slate-400 font-medium tracking-wide">ኢትዮ ቢንጎ - የድምፅ ጨዋታ</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleVoiceSound()" id="voice-toggle-btn" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-brand-400 text-sm font-semibold transition-colors border border-slate-700 flex items-center space-x-1.5">
+                    <i class="fa-solid fa-volume-high" id="voice-icon"></i>
+                    <span id="voice-label">ድምፅ ON</span>
+                </button>
+                <div id="auth-header-area" class="flex items-center space-x-3"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- 1. HOME TAB (ROOM्स SELECTION) -->
+        <div id="tab-home" class="space-y-8">
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-brand-950 border border-slate-800 p-8 shadow-2xl">
+                <div class="relative z-10 max-w-2xl space-y-4">
+                    <span class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs font-bold uppercase tracking-wider">
+                        <i class="fa-solid fa-bullhorn text-amber-500 animate-bounce"></i>
+                        <span>Live Amharic Voice Bingo 75-Ball</span>
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">ASH BINGO - በድምፅ እና በእውነተኛ ገንዘብ!</h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">ክፍል ይምረጡ (የ 10 ብር ወይም የ 20 ብር ጨዋታ)፣ የራሱን የካርቴላ ገጽ ከፍተው ቢበዛ 4 ካርቴላ ይምረጡ።</p>
+                </div>
+            </div>
+
+            <!-- ROOMS LIST -->
+            <div class="space-y-4">
+                <h3 class="text-xl font-bold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-door-open text-brand-500"></i>
+                    <span>የጨዋታ ክፍሎች (Betting Rooms & Pages)</span>
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div onclick="openRoomCartelaPage('low', 10, 'Habesha Casual (10 Birr)')" class="cursor-pointer rounded-2xl bg-slate-900 border border-slate-800 hover:border-brand-500 p-5 transition-all shadow-xl flex flex-col justify-between">
+                        <div class="space-y-2">
+                            <span class="px-2.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px] font-bold uppercase">10 Birr Room</span>
+                            <h4 class="text-lg font-bold text-white">Habesha Casual</h4>
+                            <p class="text-xs text-slate-400">ዋጋ: <strong class="text-brand-400">10 ብር</strong></p>
+                        </div>
+                        <button class="mt-4 w-full py-2 rounded-xl bg-brand-600 text-white font-bold text-xs">ይህን ክፍል ክፈት</button>
+                    </div>
+
+                    <div onclick="openRoomCartelaPage('good', 20, 'Standard Fun (20 Birr)')" class="cursor-pointer rounded-2xl bg-slate-900 border border-slate-800 hover:border-brand-500 p-5 transition-all shadow-xl flex flex-col justify-between">
+                        <div class="space-y-2">
+                            <span class="px-2.5 py-0.5 rounded bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase">20 Birr Room</span>
+                            <h4 class="text-lg font-bold text-white">Standard Fun</h4>
+                            <p class="text-xs text-slate-400">ዋጋ: <strong class="text-blue-400">20 ብር</strong></p>
+                        </div>
+                        <button class="mt-4 w-full py-2 rounded-xl bg-blue-600 text-white font-bold text-xs">ይህን ክፍል ክፈት</button>
+                    </div>
+
+                    <div onclick="openRoomCartelaPage('mid', 50, 'Addis Pro (50 Birr)')" class="cursor-pointer rounded-2xl bg-slate-900 border border-slate-800 hover:border-brand-500 p-5 transition-all shadow-xl flex flex-col justify-between">
+                        <div class="space-y-2">
+                            <span class="px-2.5 py-0.5 rounded bg-amber-500/10 text-amber-400 text-[10px] font-bold uppercase">50 Birr Room</span>
+                            <h4 class="text-lg font-bold text-white">Addis Pro</h4>
+                            <p class="text-xs text-slate-400">ዋጋ: <strong class="text-amber-400">50 ብር</strong></p>
+                        </div>
+                        <button class="mt-4 w-full py-2 rounded-xl bg-amber-600 text-slate-950 font-bold text-xs">ይህን ክፍል ክፈት</button>
+                    </div>
+
+                    <div onclick="openRoomCartelaPage('normal', 100, 'Addis Master (100 Birr)')" class="cursor-pointer rounded-2xl bg-slate-900 border-2 border-brand-500/60 p-5 transition-all shadow-xl flex flex-col justify-between relative">
+                        <span class="absolute top-0 right-0 bg-brand-500 text-slate-950 font-black text-[9px] uppercase px-2.5 py-0.5 rounded-bl-xl">Popular</span>
+                        <div class="space-y-2">
+                            <span class="px-2.5 py-0.5 rounded bg-purple-500/10 text-purple-400 text-[10px] font-bold uppercase">100 Birr Room</span>
+                            <h4 class="text-lg font-bold text-white">Addis Master</h4>
+                            <p class="text-xs text-slate-400">ዋጋ: <strong class="text-brand-400">100 ብር</strong></p>
+                        </div>
+                        <button class="mt-4 w-full py-2 rounded-xl bg-brand-600 text-white font-bold text-xs">ይህን ክፍል ክፈት</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROOM SPECIFIC CARTELA PAGE CONTAINER -->
+            <div id="room-cartela-page-box" class="space-y-4 bg-slate-900 p-6 rounded-2xl border border-slate-800 hidden">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <div>
+                        <span class="text-[10px] text-amber-400 uppercase font-bold">የተመረጠ ክፍል:</span>
+                        <h3 id="active-room-title" class="text-lg font-black text-white">-</h3>
+                    </div>
+                    <button onclick="backToRoomsList()" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold"><i class="fa-solid fa-arrow-left mr-1"></i> ክፍሎችን ቀይር</button>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <h4 class="text-sm font-bold text-white"><i class="fa-solid fa-ticket text-brand-500 mr-2"></i>ካርቴላ ይምረጡ (ከ 1 እስከ 100 - ቢበዛ 4)</h4>
+                    <button onclick="clearCartelas()" class="text-xs text-rose-400 font-bold">ሁሉንም አጥፋ</button>
+                </div>
+                
+                <div id="cartela-grid-1-100" class="grid grid-cols-5 sm:grid-cols-10 gap-2 max-h-60 overflow-y-auto pr-1"></div>
+                
+                <div class="flex items-center justify-between pt-4 border-t border-slate-800">
+                    <span id="selected-badge" class="text-xs text-slate-400">የተመረጡ: የሉም (ከ 4 ሳልበልጥ)</span>
+                    <button onclick="proceedToReview()" class="px-8 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-amber-500 text-slate-950 font-black text-sm shadow-lg">ካርቴላዎችን አሳይ እና አረጋግጥ</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- REVIEW & CONFIRM CARTELA MODAL / PAGE -->
+        <div id="tab-review" class="hidden space-y-6 max-w-3xl mx-auto bg-slate-900 p-6 rounded-3xl border border-slate-800 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white"><i class="fa-solid fa-eye text-amber-500 mr-2"></i>የተመረጡ ካርቴላዎች ማረጋገጫ (Review Cartelas)</h3>
+                    <p class="text-xs text-slate-400">እባክዎ ከመጀመርዎ በፊት የመረጧቸውን ካርቴላዎች ቁጥሮች እና ይዘት ይመልከቱ።</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs text-slate-400 block">አጠቃላይ ዋጋ</span>
+                    <span id="review-total-cost" class="text-lg font-black text-amber-400">0.00 ብር</span>
+                </div>
+            </div>
+
+            <!-- Review Cards Grid -->
+            <div id="review-cartelas-container" class="space-y-4 max-h-96 overflow-y-auto pr-2"></div>
+
+            <div class="flex space-x-3 pt-4 border-t border-slate-800">
+                <button onclick="cancelAndReselect()" class="flex-1 py-3 rounded-xl bg-rose-600/10 text-rose-400 border border-rose-500/20 font-bold text-sm hover:bg-rose-600/20 transition-colors">
+                    <i class="fa-solid fa-xmark mr-1"></i> ሰርዝ (Cancel) & እንደገና ምረጥ
+                </button>
+                <button onclick="confirmAndEnterArena()" class="flex-1 py-3 rounded-xl bg-emerald-600 text-slate-950 font-black text-sm shadow-lg hover:bg-emerald-500 transition-colors">
+                    <i class="fa-solid fa-check mr-1"></i> ጨርሻለሁ (Done) & ግባ
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. WALLET TAB -->
+        <div id="tab-wallet" class="hidden space-y-6 max-w-2xl mx-auto">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 shadow-xl">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-white"><i class="fa-solid fa-wallet text-brand-500 mr-2"></i>የኪስ ቦርሳ (Wallet & Balance)</h3>
+                        <p class="text-xs text-slate-400">የሂሳብ ሁኔታዎ እና የገንዘብ ግብይቶች</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400 block">ቀሪ ሂሳብ (Balance)</span>
+                        <span id="wallet-balance-disp" class="text-2xl font-black text-amber-400">0.00 ብር</span>
+                    </div>
+                </div>
+
+                <div class="flex space-x-2">
+                    <button onclick="switchWalletTab('deposit')" id="wtab-dep" class="flex-1 py-2.5 rounded-xl bg-brand-600 text-white font-bold text-xs">ዲፖዚት (Deposit)</button>
+                    <button onclick="switchWalletTab('withdraw')" id="wtab-wit" class="flex-1 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs">ዊዝድሮው (Withdraw)</button>
+                </div>
+
+                <div id="wallet-deposit-box" class="space-y-4">
+                    <div class="space-y-1">
+                        <label class="text-[11px] text-slate-400">1. የክፍያ ዘዴ ይምረጡ (Choose Payment Method):</label>
+                        <select id="deposit-method-select" onchange="updateDepositAccountDetails()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs">
+                            <option value="CBE Birr">ሲቢኢ ብር (CBE Birr)</option>
+                            <option value="CBE Bank">የኢትዮጵያ ንግድ ባንክ (CBE Bank)</option>
+                            <option value="Telebirr">ቴሌብር (Telebirr)</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-xs space-y-1.5">
+                        <p class="text-slate-400">የተመረጠው አካውንት/ቁጥር: <strong id="dep-acc-disp" class="text-amber-400">0988633900</strong></p>
+                        <p class="text-slate-400">የአካውንት ስም: <strong class="text-white">ASHENAFI DIBABA</strong></p>
+                    </div>
+
+                    <input type="number" id="wallet-dep-amount" placeholder="መጠን በብር (ETB)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm">
+
+                    <div class="space-y-1">
+                        <label class="text-[11px] text-slate-400">2. የክፍያ ማረጋገጫ ማቅረቢያ መንገድ (Proof Mode):</label>
+                        <div class="flex space-x-2">
+                            <button type="button" onclick="setProofMode('text')" id="pm-btn-text" class="flex-1 py-2 rounded-lg bg-brand-600 text-white font-bold text-xs">በጽሁፍ (FT ቁጥር)</button>
+                            <button type="button" onclick="setProofMode('image')" id="pm-btn-image" class="flex-1 py-2 rounded-lg bg-slate-800 text-slate-300 font-bold text-xs">በምስል (ስክሪንሾት)</button>
+                        </div>
+                    </div>
+
+                    <div id="dep-proof-text-wrap">
+                        <input type="text" id="wallet-dep-ref" placeholder="የባንክ ማመሳከሪያ ቁጥር (ለምሳሌ: FT26...)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm">
+                    </div>
+
+                    <div id="dep-proof-image-wrap" class="hidden space-y-1">
+                        <input type="file" id="wallet-dep-file" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white text-xs">
+                        <p class="text-[10px] text-slate-500">የክፍያ ማረጋገጫ ስክሪንሾት (Screenshot) ይጫኑ</p>
+                    </div>
+
+                    <button onclick="submitWalletDeposit()" class="w-full py-3 rounded-xl bg-brand-600 text-white font-bold text-sm">የዲፖዚት ጥያቄ ላክ</button>
+                </div>
+
+                <div id="wallet-withdraw-box" class="hidden space-y-4">
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-xs space-y-1">
+                        <p class="text-slate-400">የማውጫ ገደብ: <strong class="text-amber-400">ዝቅተኛ 50 - ከፍተኛ 10,000 ብር</strong></p>
+                    </div>
+                    <input type="number" id="wallet-wit-amount" placeholder="የሚወጣው መጠን በብር (ETB)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm">
+                    <div class="space-y-1">
+                        <label class="text-[11px] text-slate-400">የክፍያ ዘዴ ይምረጡ (Payment Method):</label>
+                        <select id="wallet-wit-method" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs">
+                            <option value="CBE Birr">ሲቢኢ ብር (CBE Birr)</option>
+                            <option value="CBE Bank">የኢትዮጵያ ንግድ ባንክ (CBE Bank)</option>
+                            <option value="Telebirr">ቴሌብር (Telebirr)</option>
+                        </select>
+                    </div>
+                    <input type="text" id="wallet-wit-acc" placeholder="የስልክ ቁጥር ወይም የባንክ አካውንት ቁጥር" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm">
+                    <button onclick="submitWalletWithdraw()" class="w-full py-3 rounded-xl bg-rose-600 text-white font-bold text-sm">የገንዘብ ማውጫ ጥያቄ ላክ</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. GAME / ARENA TAB -->
+        <div id="tab-game" class="hidden space-y-6">
+            <div class="flex items-center justify-between bg-slate-900 p-4 rounded-2xl border border-slate-800">
+                <div class="flex items-center space-x-3">
+                    <button onclick="switchNavTab('home')" class="p-2 rounded-xl bg-slate-800 text-slate-300"><i class="fa-solid fa-arrow-left"></i></button>
+                    <div>
+                        <h3 id="arena-room-name" class="font-bold text-white">Classic Room</h3>
+                        <p class="text-xs text-slate-400">ዋጋ: <span id="arena-stake">100</span> ብር</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-center bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800">
+                        <span class="text-[10px] text-slate-400 block">ተጫዋቾች (Players)</span>
+                        <span id="arena-total-players" class="text-sm font-black text-brand-400">2</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400 block">የሽልማት ገቢ (Winning Prize)</span>
+                        <span id="arena-pot" class="text-lg font-black text-amber-400">0.00 ETB</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COUNTDOWN LOBBY BOX -->
+            <div id="game-lobby-box" class="bg-slate-900 p-8 rounded-3xl border border-brand-500/40 text-center space-y-4">
+                <div class="w-20 h-20 mx-auto rounded-full bg-brand-500/10 text-amber-400 flex items-center justify-center text-3xl border border-brand-500/30 animate-pulse">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                </div>
+                <h3 class="text-2xl font-black text-white">የጨዋታ ቆጣሪ (Waiting Lobby)</h3>
+                <p class="text-xs text-slate-400">ይህ ክፍል ጨዋታው ከመጀመሩ በፊት የሚቆይበት የ 1 ደቂቃ የጥበቃ ሰዓት ነው።</p>
+                <div id="countdown-timer-disp" class="text-4xl font-black text-amber-400">01:00</div>
+                
+                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 max-w-md mx-auto flex items-center space-x-4 text-left">
+                    <div id="lobby-win-icon" class="w-12 h-12 rounded-xl bg-brand-500/20 text-amber-400 flex items-center justify-center text-xl shrink-0 border border-brand-500/40">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] text-amber-400 uppercase font-bold">የዚህ ዙር አሸናፊነት አይነት (Winning Type):</span>
+                        <h4 id="lobby-win-title" class="text-sm font-bold text-white">Single Line (ነጠላ መስመር)</h4>
+                        <p id="lobby-win-desc" class="text-[11px] text-slate-400">አምስት ተከታታይ ቁጥሮች በአግድም፣ በቁመት ወይም በሰያፍ መሙላት።</p>
+                    </div>
+                </div>
+
+                <p class="text-[11px] text-emerald-400"><i class="fa-solid fa-users mr-1"></i> አነስተኛ 2 ተጫዋቾች ያስፈልጋሉ (ቆጣሪው ሲያልቅ ጨዋታው ይጀምራል)</p>
+            </div>
+
+            <!-- LIVE GAME ARENA -->
+            <div id="game-arena-box" class="grid grid-cols-1 lg:grid-cols-12 gap-6 hidden">
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 text-center space-y-4">
+                        <span id="game-status-badge" class="text-xs text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 inline-block"><i class="fa-solid fa-microphone-lines mr-1 animate-ping"></i> ጨዋታው በሂደት ላይ ነው!</span>
+                        <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-tr from-brand-600 to-amber-300 flex flex-col items-center justify-center shadow-xl border-4 border-amber-200/30 bingo-ball-pulse">
+                            <span id="ball-letter" class="text-xs font-bold text-slate-950">B</span>
+                            <span id="ball-num" class="text-3xl font-black text-slate-950">-</span>
+                        </div>
+                        <button onclick="speakCurrentBall()" class="px-4 py-2 bg-brand-600 text-white font-bold rounded-xl text-xs"><i class="fa-solid fa-volume-high mr-1"></i> ኳሷን በአማርኛ አሰማ</button>
+                        <div id="master-board" class="grid grid-cols-5 gap-1 text-[11px] max-h-48 overflow-y-auto"></div>
+                    </div>
+
+                    <!-- LIVE GAME CHAT BOX -->
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-3">
+                        <h4 class="text-xs font-bold text-amber-400 uppercase"><i class="fa-solid fa-comments mr-1"></i> የጨዋታ አዳራሽ ቻት (Live Chat)</h4>
+                        <div id="chat-messages-list" class="bg-slate-950 h-36 rounded-xl p-3 overflow-y-auto space-y-2 text-xs border border-slate-800">
+                            <p class="text-slate-500 italic text-[11px]">መልዕክቶች እዚህ ይታያሉ...</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <input type="text" id="chat-input-msg" placeholder="መልዕክት ጻፍ..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-xs">
+                            <button onclick="sendChatMessage()" class="px-4 py-2 bg-brand-600 text-white rounded-xl font-bold text-xs"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-white text-sm"><i class="fa-solid fa-certificate text-brand-500 mr-2"></i>የእርስዎ ካርቴላዎች (ቢበዛ 4)</h4>
+                        <button onclick="downloadMyCartelas()" class="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs"><i class="fa-solid fa-download mr-1"></i> ካርቴላ አውርድ (Download)</button>
+                    </div>
+                    <div id="arena-my-cartelas" class="space-y-4"></div>
+                    <button onclick="claimBingo()" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-base shadow-lg">ቢንጎ (BINGO) ብል!</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. LEADERBOARD TAB -->
+        <div id="tab-leaderboard" class="hidden space-y-6 max-w-2xl mx-auto">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-4 shadow-xl">
+                <div class="border-b border-slate-800 pb-3 flex items-center justify-between">
+                    <h3 class="font-bold text-white text-lg"><i class="fa-solid fa-trophy text-amber-500 mr-2"></i>የአሸናፊዎች ሰንጠረዥ (Leaderboard)</h3>
+                    <span class="text-xs text-brand-400 bg-brand-500/10 px-2.5 py-1 rounded-full border border-brand-500/20">Top Winners</span>
+                </div>
+                <div class="space-y-3" id="leaderboard-list"></div>
+            </div>
+        </div>
+
+        <!-- 5. PROFILE & SETTINGS TAB -->
+        <div id="tab-profile" class="hidden space-y-6 max-w-2xl mx-auto">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 shadow-xl">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-white"><i class="fa-solid fa-user-gear text-brand-500 mr-2"></i>መገለጫ እና ቅንብሮች (Profile & Settings)</h3>
+                        <p class="text-xs text-slate-400">የአካውንትዎ መረጃዎች እና የይለፍ ቃል ማስተካከያ</p>
+                    </div>
+                    <button onclick="logout()" class="px-3 py-1.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-bold">ውጣ (Logout)</button>
+                </div>
+
+                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 text-xs">
+                    <p class="text-slate-400">ሙሉ ስም: <strong id="pf-fullname" class="text-white">-</strong></p>
+                    <p class="text-slate-400">ዩዘር ስም: <strong id="pf-username" class="text-white">-</strong></p>
+                    <p class="text-slate-400">ስልክ ቁጥር: <strong id="pf-phone" class="text-white">-</strong></p>
+                    <p class="text-slate-400">ቀሪ ሂሳብ: <strong id="pf-balance" class="text-amber-400">0.00 ብር</strong></p>
+                </div>
+
+                <!-- Password Change Section -->
+                <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-4">
+                    <h4 class="text-xs font-bold text-amber-400 uppercase tracking-widest"><i class="fa-solid fa-key mr-1"></i> የይለፍ ቃል መቀየሪያ (Change Password)</h4>
+                    <div class="space-y-3">
+                        <div class="relative">
+                            <input type="password" id="user-old-pass" placeholder="አሁን ያለዎት የይለፍ ቃል" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs pr-10">
+                            <button type="button" onclick="togglePasswordVisibility('user-old-pass', 'icon-old')" class="absolute right-3 top-3.5 text-slate-400 hover:text-white">
+                                <i class="fa-solid fa-eye" id="icon-old"></i>
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <input type="password" id="user-new-pass" placeholder="አዲስ የይለፍ ቃል (ቢያንስ 6 ዲጂት)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs pr-10">
+                            <button type="button" onclick="togglePasswordVisibility('user-new-pass', 'icon-new')" class="absolute right-3 top-3.5 text-slate-400 hover:text-white">
+                                <i class="fa-solid fa-eye" id="icon-new"></i>
+                            </button>
+                        </div>
+                        <button onclick="executeUserPasswordChange()" class="w-full py-2.5 rounded-xl bg-brand-600 text-white font-bold text-xs">የይለፍ ቃል አዘምን</button>
+                    </div>
+                </div>
+
+                <div class="pt-2 text-center">
+                    <button onclick="openOwnerModal()" class="text-xs text-amber-500 font-bold hover:underline">
+                        <i class="fa-solid fa-crown mr-1"></i> የባለቤት እና አድሚን ፖርታል (Owner/Admin Portal)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-md border-t border-slate-800 px-4 py-2">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <button onclick="switchNavTab('home')" id="nav-btn-home" class="flex flex-col items-center space-y-1 text-brand-500 transition-colors py-1 px-3">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px] font-semibold">Home</span>
+            </button>
+            <button onclick="switchNavTab('wallet')" id="nav-btn-wallet" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-slate-200 transition-colors py-1 px-3">
+                <i class="fa-solid fa-wallet text-lg"></i>
+                <span class="text-[10px] font-semibold">Wallet</span>
+            </button>
+            <button onclick="switchNavTab('game')" id="nav-btn-game" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-slate-200 transition-colors py-1 px-3">
+                <i class="fa-solid fa-gamepad text-lg"></i>
+                <span class="text-[10px] font-semibold">Game</span>
+            </button>
+            <button onclick="switchNavTab('leaderboard')" id="nav-btn-leaderboard" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-slate-200 transition-colors py-1 px-3">
+                <i class="fa-solid fa-trophy text-lg"></i>
+                <span class="text-[10px] font-semibold">Leaderboard</span>
+            </button>
+            <button onclick="switchNavTab('profile')" id="nav-btn-profile" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-slate-200 transition-colors py-1 px-3">
+                <i class="fa-solid fa-user-gear text-lg"></i>
+                <span class="text-[10px] font-semibold">Profile</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- AUTH MODAL -->
+    <div id="modal-auth" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 hidden p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto relative">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 pr-8">
+                <div class="flex space-x-2">
+                    <button onclick="switchAuthTab('signin')" id="atab-in" class="px-3 py-1.5 rounded-lg bg-brand-600 text-white font-bold text-xs">ግባ</button>
+                    <button onclick="switchAuthTab('register')" id="atab-reg" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 font-bold text-xs">ተመዝገብ</button>
+                    <button onclick="switchAuthTab('forgot')" id="atab-forgot" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 font-bold text-xs">ይለፍ ቃል ረሳሁ</button>
+                </div>
+            </div>
+
+            <div id="form-signin" class="space-y-3">
+                <input type="text" id="in-phone" placeholder="ስልክ ቁጥር ወይም ዩዘር ስም" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm">
+                <div class="relative">
+                    <input type="password" id="in-pass" placeholder="የይለፍ ቃል (Password)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm pr-10">
+                    <button type="button" onclick="togglePasswordVisibility('in-pass', 'icon-login')" class="absolute right-3 top-3.5 text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-eye" id="icon-login"></i>
+                    </button>
+                </div>
+                <button onclick="handleSignIn()" class="w-full py-3 rounded-xl bg-brand-600 text-white font-bold text-sm">ግባ (Sign In)</button>
+            </div>
+
+            <div id="form-register" class="hidden space-y-3">
+                <input type="text" id="reg-name" placeholder="ሙሉ ስም" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm">
+                <input type="text" id="reg-phone" placeholder="ስልክ ቁጥር (09...)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm">
+                <input type="text" id="reg-user" placeholder="ዩዘር ስም (Username)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm">
+                <div class="relative">
+                    <input type="password" id="reg-pass" placeholder="የይለፍ ቃል (ቢያንስ 6 ዲጂት)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm pr-10">
+                    <button type="button" onclick="togglePasswordVisibility('reg-pass', 'icon-reg')" class="absolute right-3 top-3.5 text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-eye" id="icon-reg"></i>
+                    </button>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[11px] text-slate-400">የደህንነት ጥያቄ:</label>
+                    <select id="reg-sec-q" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-xs">
+                        <option value="primary_school">የመጀመሪያ ደረጃ ትምህርት ቤት ስምህ ማን ነው?</option>
+                        <option value="fav_word">የምትወደው ወይም ሚስጥራዊ ቃልህ ምንድን ነው?</option>
+                    </select>
+                </div>
+                <input type="text" id="reg-sec-a" placeholder="የጥያቄው መልስ (Answer)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm">
+                <button onclick="handleRegister()" class="w-full py-3 rounded-xl bg-emerald-600 text-white font-bold text-sm">ተመዝገብ (Register)</button>
+            </div>
+
+            <div id="form-forgot" class="hidden space-y-3">
+                <input type="text" id="forgot-phone" placeholder="የተመዘገበበት ስልክ ቁጥር" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm">
+                <div class="space-y-1">
+                    <label class="text-[11px] text-slate-400">የመረጡት የደህንነት ጥያቄ:</label>
+                    <select id="forgot-sec-q" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-xs">
+                        <option value="primary_school">የመጀመሪያ ደረጃ ትምህርት ቤት ስምህ ማን ነው?</option>
+                        <option value="fav_word">የምትወደው ወይም ሚስጥራዊ ቃልህ ምንድን ነው?</option>
+                    </select>
+                </div>
+                <input type="text" id="forgot-sec-a" placeholder="የሰጡት ትክክለኛ መልስ" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm">
+                <div class="relative">
+                    <input type="password" id="forgot-newpass" placeholder="አዲስ የይለፍ ቃል (ቢያንስ 6 ዲጂት)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm pr-10">
+                    <button type="button" onclick="togglePasswordVisibility('forgot-newpass', 'icon-forgot')" class="absolute right-3 top-3.5 text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-eye" id="icon-forgot"></i>
+                    </button>
+                </div>
+                <button onclick="handleForgotPassword()" class="w-full py-3 rounded-xl bg-amber-600 text-slate-950 font-bold text-sm">የይለፍ ቃል አድስ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- OWNER & ADMIN MODAL -->
+    <div id="modal-owner" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 hidden p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-6 space-y-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="font-bold text-white text-lg"><i class="fa-solid fa-crown text-amber-500 mr-2"></i>የባለቤት እና አድሚን ዳሽቦርድ</h3>
+                <button onclick="closeOwnerModal()" class="text-slate-400 hover:text-white p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div id="owner-login-screen" class="space-y-4 max-w-sm mx-auto py-8 text-center">
+                <div class="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto text-2xl border border-amber-500/20">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h4 class="font-bold text-white">ባለቤት ወይም አድሚን መግቢያ</h4>
+                <input type="text" id="owner-user-input" placeholder="Username" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-center text-sm">
+                <div class="relative">
+                    <input type="password" id="owner-pass-input" placeholder="Password / PIN" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-center text-sm pr-10">
+                    <button type="button" onclick="togglePasswordVisibility('owner-pass-input', 'icon-own-login')" class="absolute right-3 top-3.5 text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-eye" id="icon-own-login"></i>
+                    </button>
+                </div>
+                <button onclick="verifyOwnerLogin()" class="w-full py-3 rounded-xl bg-amber-600 text-slate-950 font-bold text-sm">ግባ (Login)</button>
+            </div>
+
+            <div id="owner-dashboard-content" class="hidden space-y-6">
+                <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-4">
+                    <h4 class="text-xs font-bold text-amber-400 uppercase tracking-widest"><i class="fa-solid fa-sliders mr-1"></i> የጨዋታ ቅንብሮች (Winning Type & Caller Speed)</h4>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[11px] text-slate-400">የአሸናፊነት አይነት ይምረጡ (Winning Type):</label>
+                            <select id="admin-win-type-select" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-xs">
+                                <option value="Single Line">Single Line - ነጠላ መስመር (አግድም፣ ቁመት ወይም ሰያፍ)</option>
+                                <option value="Four Corners">Four Corners - አራቱ ማዕዘኖች</option>
+                                <option value="Two Lines">Two Lines - ሁለት ሙሉ መስመሮች</option>
+                                <option value="Special Shapes">Special Shapes - ልዩ ቅርጾች (X, T, L, ፒራሚድ)</option>
+                                <option value="Full House / Blackout">Full House / Blackout - ሙሉ ካርቴላ (ማስተር ጃክፖት)</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-[11px] text-slate-400">የኳስ ጥሪ ፍጥነት (Ball Caller Speed):</label>
+                            <select id="admin-caller-speed-select" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-xs">
+                                <option value="2500">ፈጣን (2.5 ሰከንድ በሰከንድ)</option>
+                                <option value="3500" selected>መካከለኛ (3.5 ሰከንድ - መደበኛ)</option>
+                                <option value="5000">ቀስ ያለ (5 ሰከንድ)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="saveAdminGameSettings()" class="w-full py-2.5 rounded-xl bg-brand-600 text-white font-bold text-xs">ቅንብሮቹን አስቀምጥ (Save Settings)</button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-1">
+                        <span class="text-[10px] text-slate-400 uppercase font-semibold">ጠቅላላ ገቢ (Deposits)</span>
+                        <h4 id="stat-deposits" class="text-xl font-black text-emerald-400">0.00 ETB</h4>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-1">
+                        <span class="text-[10px] text-slate-400 uppercase font-semibold">ጠቅላላ ወጪ (Payouts)</span>
+                        <h4 id="stat-payouts" class="text-xl font-black text-rose-400">0.00 ETB</h4>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-1">
+                        <span class="text-[10px] text-slate-400 uppercase font-semibold">ንጹህ ትርፍ (Net Profit)</span>
+                        <h4 id="stat-profit" class="text-xl font-black text-amber-400">0.00 ETB</h4>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-1">
+                        <span class="text-[10px] text-slate-400 uppercase font-semibold">ኮሚሽን ቫልት</span>
+                        <h4 id="stat-commission" class="text-xl font-black text-purple-400">0.00 ETB</h4>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold text-rose-400 uppercase tracking-widest"><i class="fa-solid fa-bell mr-1"></i> የገንዘብ ማውጫ እና ማስገባት ጥያቄዎች</h4>
+                    <div id="owner-txs-list" class="space-y-2 max-h-48 overflow-y-auto"></div>
+                </div>
+
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">የተመዘገቡ ተጫዋቾች ማስተዳደሪያ</h4>
+                    <div id="owner-users-list" class="space-y-2 max-h-60 overflow-y-auto"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT SYSTEM -->
+    <script>
+        const amharicNumbers = ["ዜሮ", "አንድ", "ሁለት", "ሶስት", "አራት", "አምስት", "ስስት", "ሰባት", "ስምንት", "ዘጠኝ", "አስር", 
+            "አስራ አንድ", "አስራ ሁለት", "አስራ ሶስት", "አስራ አራት", "አስራ አምስት", "አስራ ስድስት", "አስራ ሰባት", "አስራ ስምንት", "አስራ ዘጠኝ", "ሃያ",
+            "ሃያ አንድ", "ሃያ ሁለት", "ሃያ ሶስት", "ሃያ አራት", "ሃያ አምስት", "ሃያ ስድስት", "ሃያ ሰባት", "ሃያ ስምንት", "ሃያ ዘጠኝ", "ሰላሳ",
+            "ሰላሳ አንድ", "ሰላሳ ሁለት", "ሰላሳ ሶስት", "ሰላሳ አራት", "ሰላሳ አምስት", "ሰላሳ ስድስት", "ሰላሳ ሰባት", "ሰላሳ ስምንት", "ሰላሳ ዘጠኝ", "አርባ",
+            "አርባ አንድ", "አርባ ሁለት", "አርባ ሶስት", "አርባ አራት", "አርባ አምስት", "አርባ ስድስት", "አርባ ሰባት", "አርባ ስምንት", "አርባ ዘጠኝ", "ሃምሳ",
+            "ሃምሳ አንድ", "ሃምሳ ሁለት", "ሃምሳ ሶስት", "ሃምሳ አራት", "ሃምሳ አምስት", "ሃምሳ ስልሳ", "ሃምሳ ሰባት", "ሃምሳ ስምንት", "ሃምሳ ዘጠኝ", "ስልሳ",
+            "ስልሳ አንድ", "ስልሳ ሁለት", "ስልሳ ሶስት", "ስልሳ አራት", "ስልሳ አምስት", "ስልሳ ስድስት", "ስልሳ ሰባት", "ስልሳ ስምንት", "ስልሳ ዘጠኝ", "ሰባ",
+            "ሰባ አንድ", "ሰባ ሁለት", "ሰባ ሶስት", "ሰባ አራት", "ሰባ አምስት"];
+
+        function getAmharicNumWord(n) { return amharicNumbers[n] || n.toString(); }
+
+        let dbUsers = JSON.parse(localStorage.getItem('ash_users')) || [
+            { fullname: 'አበበ ከበደ', phone: '0911223344', username: 'abebe', password: 'password123', balance: 500, status: 'Active', role: 'Player', secQuestion: 'primary_school', secAnswer: 'addis' },
+            { fullname: 'አድሚን ኃለፊ', phone: '0922334455', username: 'admin1', password: '1234', balance: 0, status: 'Active', role: 'Admin', secQuestion: 'fav_word', secAnswer: 'bingo' }
+        ];
+        let dbTransactions = JSON.parse(localStorage.getItem('ash_txs')) || [];
+        let ownerPass = localStorage.getItem('ash_owner_pass') || 'Amd123##';
+        let ownerCommission = parseFloat(localStorage.getItem('ash_commission')) || 0.00;
+        
+        let gameSettings = JSON.parse(localStorage.getItem('ash_game_settings')) || {
+            winningType: 'Single Line',
+            callerSpeed: 3500
+        };
+
+        let paymentAccounts = {
+            'CBE Birr': '0988633900',
+            'CBE Bank': '1000708226495',
+            'Telebirr': '0988633900'
+        };
+
+        let currentUser = JSON.parse(localStorage.getItem('ash_current_user')) || null;
+        let selectedRoom = { id: 'normal', name: 'Addis Master', price: 100 };
+        let selectedCartelas = [];
+        let calledBalls = [];
+        let chatMessages = JSON.parse(localStorage.getItem('ash_chat_msgs')) || [
+            { user: 'System', text: 'እንኳን ወደ ASH BINGO በደህና መጡ! መልካም ዕድል!' }
+        ];
+        let gameInterval = null;
+        let countdownInterval = null;
+        let voiceEnabled = true;
+        let currentProofMode = 'text';
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderAuthHeader();
+            updateDepositAccountDetails();
+            if (!currentUser) openAuthModal();
+            else updateProfileTabInfo();
+        });
+
+        window.togglePasswordVisibility = (inputId, iconId) => {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-solid fa-eye';
+            }
+        };
+
+        window.setProofMode = (mode) => {
+            currentProofMode = mode;
+            const textWrap = document.getElementById('dep-proof-text-wrap');
+            const imgWrap = document.getElementById('dep-proof-image-wrap');
+            const btnText = document.getElementById('pm-btn-text');
+            const btnImg = document.getElementById('pm-btn-image');
+
+            if (mode === 'text') {
+                textWrap.classList.remove('hidden');
+                imgWrap.classList.add('hidden');
+                btnText.className = "flex-1 py-2 rounded-lg bg-brand-600 text-white font-bold text-xs";
+                btnImg.className = "flex-1 py-2 rounded-lg bg-slate-800 text-slate-300 font-bold text-xs";
+            } else {
+                textWrap.classList.add('hidden');
+                imgWrap.classList.remove('hidden');
+                btnText.className = "flex-1 py-2 rounded-lg bg-slate-800 text-slate-300 font-bold text-xs";
+                btnImg.className = "flex-1 py-2 rounded-lg bg-brand-600 text-white font-bold text-xs";
+            }
+        };
+
+        window.updateDepositAccountDetails = () => {
+            const method = document.getElementById('deposit-method-select').value;
+            const disp = document.getElementById('dep-acc-disp');
+            if(disp) disp.innerText = paymentAccounts[method] || '0988633900';
+        };
+
+        function speakAmharic(text) {
+            if (!voiceEnabled || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'am-ET';
+            utterance.rate = 0.85;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        window.toggleVoiceSound = () => {
+            voiceEnabled = !voiceEnabled;
+            const btn = document.getElementById('voice-toggle-btn');
+            const icon = document.getElementById('voice-icon');
+            const label = document.getElementById('voice-label');
+            if (voiceEnabled) {
+                btn.className = "px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-brand-400 text-sm font-semibold transition-colors border border-slate-700 flex items-center space-x-1.5";
+                icon.className = "fa-solid fa-volume-high";
+                label.innerText = "ድምፅ ON";
+                speakAmharic("ድምፅ በርቷል");
+            } else {
+                btn.className = "px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-500 text-sm font-semibold transition-colors border border-slate-700 flex items-center space-x-1.5";
+                icon.className = "fa-solid fa-volume-xmark";
+                label.innerText = "ድምፅ OFF";
+            }
+        };
+
+        window.switchNavTab = (tabName) => {
+            ['home', 'review', 'wallet', 'game', 'leaderboard', 'profile'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if(el) el.classList.add('hidden');
+                const btn = document.getElementById(`nav-btn-${t}`);
+                if(btn) btn.className = "flex flex-col items-center space-y-1 text-slate-400 hover:text-slate-200 transition-colors py-1 px-3";
+            });
+
+            const targetTab = document.getElementById(`tab-${tabName}`);
+            if(targetTab) targetTab.classList.remove('hidden');
+            const targetBtn = document.getElementById(`nav-btn-${tabName}`);
+            if(targetBtn) targetBtn.className = "flex flex-col items-center space-y-1 text-brand-500 transition-colors py-1 px-3";
+
+            if (tabName === 'profile') updateProfileTabInfo();
+            if (tabName === 'wallet') updateWalletBalance();
+            if (tabName === 'leaderboard') renderLeaderboard();
+        };
+
+        function updateProfileTabInfo() {
+            if (!currentUser) return;
+            document.getElementById('pf-fullname').innerText = currentUser.fullname;
+            document.getElementById('pf-username').innerText = currentUser.username;
+            document.getElementById('pf-phone').innerText = currentUser.phone;
+            document.getElementById('pf-balance').innerText = `${currentUser.balance.toFixed(2)} ብር`;
+        }
+
+        window.updateWalletBalance = () => {
+            if (!currentUser) return;
+            document.getElementById('wallet-balance-disp').innerText = `${currentUser.balance.toFixed(2)} ብር`;
+        };
+
+        function renderLeaderboard() {
+            const list = document.getElementById('leaderboard-list');
+            const sortedUsers = [...dbUsers].filter(u => u.role === 'Player').sort((a, b) => b.balance - a.balance);
+            if(sortedUsers.length === 0) {
+                list.innerHTML = `<p class="text-slate-500 text-xs text-center py-4">ምንም ተጫዋቾች የሉም</p>`;
+                return;
+            }
+            list.innerHTML = sortedUsers.map((u, index) => `
+                <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 flex items-center justify-between text-xs">
+                    <div class="flex items-center space-x-3">
+                        <span class="w-6 h-6 rounded-full ${index === 0 ? 'bg-amber-500 text-slate-950 font-black' : index === 1 ? 'bg-slate-300 text-slate-950 font-bold' : index === 2 ? 'bg-amber-700 text-white font-bold' : 'bg-slate-800 text-slate-400'} flex items-center justify-center text-xs">${index + 1}</span>
+                        <div>
+                            <strong class="text-white">${u.fullname}</strong>
+                            <span class="text-slate-400 block text-[10px]">@${u.username}</span>
+                        </div>
+                    </div>
+                    <span class="text-amber-400 font-black text-sm">${u.balance.toFixed(2)} ETB</span>
+                </div>
+            `).join('');
+        }
+
+        window.switchWalletTab = (t) => {
+            if(t === 'deposit') {
+                document.getElementById('wallet-deposit-box').classList.remove('hidden');
+                document.getElementById('wallet-withdraw-box').classList.add('hidden');
+                document.getElementById('wtab-dep').className = "flex-1 py-2.5 rounded-xl bg-brand-600 text-white font-bold text-xs";
+                document.getElementById('wtab-wit').className = "flex-1 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs";
+            } else {
+                document.getElementById('wallet-deposit-box').classList.add('hidden');
+                document.getElementById('wallet-withdraw-box').classList.remove('hidden');
+                document.getElementById('wtab-dep').className = "flex-1 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs";
+                document.getElementById('wtab-wit').className = "flex-1 py-2.5 rounded-xl bg-rose-600 text-white font-bold text-xs";
+            }
+        };
+
+        window.submitWalletDeposit = () => {
+            const method = document.getElementById('deposit-method-select').value;
+            const amt = parseFloat(document.getElementById('wallet-dep-amount').value);
+            
+            if(!amt) return alert('እባክዎ የሚገቡትን የገንዘብ መጠን ይሙሉ!');
+
+            let proofValue = '';
+            if (currentProofMode === 'text') {
+                proofValue = document.getElementById('wallet-dep-ref').value.trim();
+                if(!proofValue) return alert('እባክዎ የባንክ ማመሳከሪያ ቁጥር (FT...) ያስገቡ።');
+            } else {
+                const fileInput = document.getElementById('wallet-dep-file');
+                if(fileInput.files.length === 0) return alert('እባክዎ የክፍያ ማረጋገጫ ስክሪንሾት ይምረጡ።');
+                proofValue = '[ስክሪንሾት ምስል ተያይዟል]';
+            }
+
+            dbTransactions.push({ 
+                id: Date.now(), 
+                type: 'Deposit', 
+                method: method, 
+                user: currentUser.username, 
+                amount: amt, 
+                ref: proofValue, 
+                status: 'Pending' 
+            });
+            localStorage.setItem('ash_txs', JSON.stringify(dbTransactions));
+            alert(`የ ${amt} ብር የዲፖዚት ጥያቄዎ [${method}] በኩል ተልኳል!`);
+            document.getElementById('wallet-dep-amount').value = '';
+            if(document.getElementById('wallet-dep-ref')) document.getElementById('wallet-dep-ref').value = '';
+        };
+
+        window.submitWalletWithdraw = () => {
+            const amt = parseFloat(document.getElementById('wallet-wit-amount').value);
+            const method = document.getElementById('wallet-wit-method').value;
+            const acc = document.getElementById('wallet-wit-acc').value.trim();
+
+            if(!amt || !acc) return alert('እባክዎ የሚወጣውን መጠን እና አካውንት ቁጥር ይሙሉ!');
+            if(amt < 50) return alert('ዝቅተኛው የማውጫ መጠን 50 ብር ነው።');
+            if(amt > 10000) return alert('ከፍተኛው የማውጫ መጠን 10,000 ብር ነው።');
+            if(currentUser.balance < amt) return alert('በኪስ ቦርሳዎ ውስጥ በቂ ገንዘብ የለም።');
+
+            currentUser.balance -= amt;
+            updateUserSession();
+            updateWalletBalance();
+
+            dbTransactions.push({ id: Date.now(), type: 'Withdrawal', user: currentUser.username, amount: amt, method: method, ref: acc, status: 'Pending' });
+            localStorage.setItem('ash_txs', JSON.stringify(dbTransactions));
+            alert(`የ ${amt} ብር የዊዝድሮው ጥያቄዎ [${method}] በኩል ተልኳል።`);
+            document.getElementById('wallet-wit-amount').value = '';
+            document.getElementById('wallet-wit-acc').value = '';
+        };
+
+        function renderAuthHeader() {
+            const area = document.getElementById('auth-header-area');
+            if (!currentUser) {
+                area.innerHTML = `<button onclick="openAuthModal()" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-bold text-xs shadow-lg">ግባ / ተመዝገብ</button>`;
+            } else {
+                area.innerHTML = `
+                    <div class="flex items-center space-x-3 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700 text-xs">
+                        <div class="cursor-pointer" onclick="switchNavTab('profile')">
+                            <span class="text-slate-400 block">${currentUser.username} <i class="fa-solid fa-gear text-[10px] text-amber-400 ml-1"></i></span>
+                            <strong class="text-amber-400">${currentUser.balance.toFixed(2)} ብር</strong>
+                        </div>
+                        <button onclick="logout()" class="text-rose-400 ml-2"><i class="fa-solid fa-right-from-bracket"></i></button>
+                    </div>
+                `;
+            }
+        }
+
+        window.executeUserPasswordChange = () => {
+            const oldP = document.getElementById('user-old-pass').value.trim();
+            const newP = document.getElementById('user-new-pass').value.trim();
+
+            if (!oldP || !newP) return alert('እባክዎ አሮጌውን እና አዲሱን የይለፍ ቃል ያስገቡ።');
+            if (newP.length < 6) return alert('አዲሱ የይለፍ ቃል ቢያንስ 6 ዲጂት መሆን አለበት።');
+            if (currentUser.password !== oldP) return alert('አሁን ያለዎት የይለፍ ቃል ስህተት ነው።');
+
+            currentUser.password = newP;
+            updateUserSession();
+            alert('የይለፍ ቃልዎ በተሳካ ሁኔታ ተቀይሯል!');
+            document.getElementById('user-old-pass').value = '';
+            document.getElementById('user-new-pass').value = '';
+        };
+
+        window.openAuthModal = () => document.getElementById('modal-auth').classList.remove('hidden');
+        window.closeAuthModal = () => document.getElementById('modal-auth').classList.add('hidden');
+
+        window.switchAuthTab = (tab) => {
+            ['signin', 'register', 'forgot'].forEach(t => {
+                const formEl = document.getElementById(`form-${t}`);
+                if (formEl) formEl.classList.add('hidden');
+                
+                let btnId = 'atab-in';
+                if (t === 'register') btnId = 'atab-reg';
+                if (t === 'forgot') btnId = 'atab-forgot';
+                
+                const btnEl = document.getElementById(btnId);
+                if (btnEl) btnEl.className = "px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 font-bold text-xs";
+            });
+
+            const targetForm = document.getElementById(`form-${tab}`);
+            if (targetForm) targetForm.classList.remove('hidden');
+
+            let targetBtnId = 'atab-in';
+            if (tab === 'register') targetBtnId = 'atab-reg';
+            if (tab === 'forgot') targetBtnId = 'atab-forgot';
+
+            const targetBtn = document.getElementById(targetBtnId);
+            if (targetBtn) targetBtn.className = "px-3 py-1.5 rounded-lg bg-brand-600 text-white font-bold text-xs";
+        };
+
+        window.handleSignIn = () => {
+            const id = document.getElementById('in-phone').value.trim();
+            const pass = document.getElementById('in-pass').value.trim();
+            const user = dbUsers.find(u => (u.phone === id || u.username === id) && u.password === pass);
+            if (!user) return alert('ስልክ ቁጥር/ዩዘር ስም ወይም የይለፍ ቃል ስህተት ነው!');
+            if (user.status === 'Banned') return alert('ይህ አካውንት ታግዷል።');
+            currentUser = user;
+            localStorage.setItem('ash_current_user', JSON.stringify(currentUser));
+            closeAuthModal();
+            renderAuthHeader();
+            switchNavTab('home');
+            speakAmharic(`እንኳን ደህና መጡ ${currentUser.fullname}`);
+        };
+
+        window.handleRegister = () => {
+            const name = document.getElementById('reg-name').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const uname = document.getElementById('reg-user').value.trim();
+            const pass = document.getElementById('reg-pass').value.trim();
+            const secQ = document.getElementById('reg-sec-q').value;
+            const secA = document.getElementById('reg-sec-a').value.trim().toLowerCase();
+
+            if (!name || !phone || !uname || !pass || !secA) return alert('እባክዎ ሁሉንም መስኮች ይሙሉ!');
+            if (pass.length < 6) return alert('የይለፍ ቃል ቢያንስ 6 ዲጂት መሆን አለበት።');
+            if (dbUsers.some(u => u.phone === phone || u.username === uname)) return alert('ስልክ ቁጥሩ ወይም ዩዘር ስሙ ቀድሞ ተመዝግቧል።');
+
+            const newUser = { fullname: name, phone, username: uname, password: pass, balance: 0, status: 'Active', role: 'Player', secQuestion: secQ, secAnswer: secA };
+            dbUsers.push(newUser);
+            localStorage.setItem('ash_users', JSON.stringify(dbUsers));
+            currentUser = newUser;
+            localStorage.setItem('ash_current_user', JSON.stringify(currentUser));
+            closeAuthModal();
+            renderAuthHeader();
+            switchNavTab('home');
+            speakAmharic("አካውንትዎ ተፈጥሯል፤ እንኳን ደህና መጡ!");
+            alert('አካውንትዎ ተፈጠረ! እባክዎ መጫወት ከመጀመርዎ በፊት ዲፖዚት ያድርጉ።');
+        };
+
+        window.handleForgotPassword = () => {
+            const phone = document.getElementById('forgot-phone').value.trim();
+            const secQ = document.getElementById('forgot-sec-q').value;
+            const secA = document.getElementById('forgot-sec-a').value.trim().toLowerCase();
+            const newPass = document.getElementById('forgot-newpass').value.trim();
+
+            if (!phone || !secA || !newPass) return alert('እባክዎ ሁሉንም መረጃዎች ይሙሉ!');
+            if (newPass.length < 6) return alert('አዲሱ የይለፍ ቃል ቢያንስ 6 ፊደላት/ቁጥሮች መሆን አለበት።');
+
+            const user = dbUsers.find(u => u.phone === phone && u.secQuestion === secQ && u.secAnswer === secA);
+            if (!user) return alert('ስልክ ቁጥሩ ወይም የደህንነት ጥያቄ መልስ ትክክል አይደለም!');
+
+            user.password = newPass;
+            localStorage.setItem('ash_users', JSON.stringify(dbUsers));
+            speakAmharic("የይለፍ ቃልዎ ተቀይሯል።");
+            alert('የይለፍ ቃልዎ ተቀይሯል! አሁን በአዲሱ የይለፍ ቃል መግባት ይችላሉ።');
+            switchAuthTab('signin');
+        };
+
+        window.logout = () => {
+            localStorage.removeItem('ash_current_user');
+            location.reload();
+        };
+
+        window.openRoomCartelaPage = (id, price, name) => {
+            selectedRoom = { id, name, price };
+            selectedCartelas = [];
+            document.getElementById('active-room-title').innerText = name;
+            document.getElementById('room-cartela-page-box').classList.remove('hidden');
+            renderCartelaGrid();
+            speakAmharic(`${name} ተመርጧል፤ ካርቴላ ይምረጡ`);
+        };
+
+        window.backToRoomsList = () => {
+            document.getElementById('room-cartela-page-box').classList.add('hidden');
+        };
+
+        function renderCartelaGrid() {
+            const grid = document.getElementById('cartela-grid-1-100');
+            if(!grid) return;
+            grid.innerHTML = '';
+            for (let i = 1; i <= 100; i++) {
+                const isSel = selectedCartelas.includes(i);
+                grid.innerHTML += `<button onclick="toggleCartela(${i})" class="h-10 rounded-lg font-bold text-xs border ${isSel ? 'bg-brand-500 text-slate-950 border-amber-300' : 'bg-slate-800 text-slate-300 border-slate-700'}">${i}</button>`;
+            }
+        }
+
+        window.toggleCartela = (n) => {
+            const idx = selectedCartelas.indexOf(n);
+            if (idx > -1) {
+                selectedCartelas.splice(idx, 1);
+            } else {
+                if (selectedCartelas.length >= 4) return alert('በአንድ ዙር ቢበዛ 4 ካርቴላ ብቻ መምረጥ ይቻላል!');
+                selectedCartelas.push(n);
+            }
+            renderCartelaGrid();
+            document.getElementById('selected-badge').innerText = `የተመረጡ: ${selectedCartelas.join(', ') || 'የሉም'} (ከ 4 ሳልበልጥ)`;
+            speakAmharic(`ካርቴላ ቁጥር ${getAmharicNumWord(n)} ተመርጧል`);
+        };
+
+        window.clearCartelas = () => {
+            selectedCartelas = [];
+            renderCartelaGrid();
+            document.getElementById('selected-badge').innerText = `የተመረጡ: የሉም`;
+        };
+
+        // PROCEED TO REVIEW & CONFIRM PAGE
+        window.proceedToReview = () => {
+            if (!currentUser) return openAuthModal();
+            if (selectedCartelas.length === 0) return alert('እባክዎ ቢያንስ አንድ ካርቴላ ይምረጡ።');
+            const cost = selectedCartelas.length * selectedRoom.price;
+            if (currentUser.balance < cost) return alert('ሂሳብዎ በቂ አይደለም። እባክዎ ዲፖዚት ያድርጉ።');
+
+            document.getElementById('review-total-cost').innerText = `${cost.toFixed(2)} ብር`;
+            renderReviewCards();
+            switchNavTab('review');
+            speakAmharic("እባክዎ የተመረጡትን ካርቴላዎች ይመልከቱ");
+        };
+
+        function renderReviewCards() {
+            const container = document.getElementById('review-cartelas-container');
+            container.innerHTML = selectedCartelas.map(id => `
+                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-brand-400">ካርቴላ ቁጥር #${id}</span>
+                        <span class="text-[10px] text-slate-400">ክፍል: ${selectedRoom.name}</span>
+                    </div>
+                    <div class="grid grid-cols-5 gap-1.5 text-center text-xs">
+                        ${Array.from({length: 25}, (_, i) => {
+                            const val = i===12 ? '★' : (id*3+i)%75+1;
+                            return `<div class="h-9 bg-slate-900 border border-slate-800 rounded-lg flex items-center justify-center font-bold text-slate-200">${val}</div>`;
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.cancelAndReselect = () => {
+            switchNavTab('home');
+            speakAmharic("ተሰርዟል፤ እንደገና ካርቴላ መምረጥ ይችላሉ");
+        };
+
+        window.confirmAndEnterArena = () => {
+            const cost = selectedCartelas.length * selectedRoom.price;
+            currentUser.balance -= cost;
+            const commissionCut = cost * 0.025;
+            ownerCommission += commissionCut;
+            localStorage.setItem('ash_commission', ownerCommission);
+
+            updateUserSession();
+            switchNavTab('game');
+            document.getElementById('arena-room-name').innerText = selectedRoom.name;
+            document.getElementById('arena-stake').innerText = selectedRoom.price;
+            
+            const simulatedPlayers = Math.floor(Math.random() * 3) + 2;
+            document.getElementById('arena-total-players').innerText = simulatedPlayers;
+            
+            const totalPot = simulatedPlayers * selectedRoom.price * selectedCartelas.length;
+            const netWinning = totalPot - (totalPot * 0.025);
+            document.getElementById('arena-pot').innerText = netWinning.toFixed(2) + ' ETB';
+
+            updateLobbyWinningTypeBanner();
+            renderMyCartelaCards();
+            renderChatMessages();
+            
+            startCountdownLobby();
+        };
+
+        window.downloadMyCartelas = () => {
+            if(selectedCartelas.length === 0) return alert('ምንም የተመረጠ ካርቴላ የለም።');
+            const content = `=== ASH BINGO - የእርስዎ ካርቴላዎች ===\nተጫዋች: ${currentUser.username}\nክፍል: ${selectedRoom.name}\nካርቴላዎች: #${selectedCartelas.join(', #')}\nቀን: ${new Date().toLocaleString()}\n===============================`;
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Ash_Bingo_Cartelas_${currentUser.username}.txt`;
+            a.click();
+            alert('የካርቴላ ዝርዝርዎ በተሳካ ሁኔታ ወርዷል (Downloaded)!');
+        };
+
+        function updateLobbyWinningTypeBanner() {
+            const titleEl = document.getElementById('lobby-win-title');
+            const descEl = document.getElementById('lobby-win-desc');
+            const iconEl = document.getElementById('lobby-win-icon');
+
+            if(titleEl) titleEl.innerText = gameSettings.winningType;
+            
+            let desc = "አምስት ተከታታይ ቁጥሮች በአግድም፣ በቁመት ወይም በሰያፍ መሙላት።";
+            let iconClass = "fa-solid fa-trophy";
+
+            if (gameSettings.winningType === 'Four Corners') {
+                desc = "የካርቴላዋን አራቱን የውጪ ማዕዘን ቁጥሮች ብቻ መሙላት።";
+                iconClass = "fa-solid fa-border-all";
+            } else if (gameSettings.winningType === 'Two Lines') {
+                desc = "በአንድ ካርቴላ ላይ ማንኛዎቹንም ሁለት ሙሉ የአግድም መስመሮች ማጠናቀቅ።";
+                iconClass = "fa-solid fa-bars";
+            } else if (gameSettings.winningType === 'Special Shapes') {
+                desc = "እንደ X፣ T፣ L ወይም ፒራሚድ ያሉ በቅድሚያ የተገለጹ ልዩ ቅርጾችን መሙላት።";
+                iconClass = "fa-solid fa-shapes";
+            } else if (gameSettings.winningType === 'Full House / Blackout') {
+                desc = "ሁሉንም 25ቱንም የካርቴላ ቁጥሮች በመሙላት ከፍተኛውን የጃክፖት ሽልማት ማሸነፍ!።";
+                iconClass = "fa-solid fa-crown text-amber-400";
+            }
+
+            if(descEl) descEl.innerText = desc;
+            if(iconEl) iconEl.innerHTML = `<i class="${iconClass}"></i>`;
+        }
+
+        function startCountdownLobby() {
+            const lobbyBox = document.getElementById('game-lobby-box');
+            const arenaBox = document.getElementById('game-arena-box');
+            const timerDisp = document.getElementById('countdown-timer-disp');
+
+            lobbyBox.classList.remove('hidden');
+            arenaBox.classList.add('hidden');
+
+            let timeLeft = 60;
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            countdownInterval = setInterval(() => {
+                let mins = Math.floor(timeLeft / 60);
+                let secs = timeLeft % 60;
+                timerDisp.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    lobbyBox.classList.add('hidden');
+                    arenaBox.classList.remove('hidden');
+                    startLiveBingoGame();
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        function startLiveBingoGame() {
+            calledBalls = [];
+            renderMasterBoard();
+            if (gameInterval) clearInterval(gameInterval);
+
+            let availableNumbers = Array.from({length: 75}, (_, i) => i + 1);
+            availableNumbers.sort(() => Math.random() - 0.5);
+
+            const speed = parseInt(gameSettings.callerSpeed) || 3500;
+
+            gameInterval = setInterval(() => {
+                if (availableNumbers.length === 0) {
+                    clearInterval(gameInterval);
+                    return;
+                }
+                const nextNum = availableNumbers.pop();
+                calledBalls.push(nextNum);
+
+                let letter = 'B';
+                if (nextNum > 15 && nextNum <= 30) letter = 'I';
+                else if (nextNum > 30 && nextNum <= 45) letter = 'N';
+                else if (nextNum > 45 && nextNum <= 60) letter = 'G';
+                else if (nextNum > 60) letter = 'O';
+
+                document.getElementById('ball-letter').innerText = letter;
+                document.getElementById('ball-num').innerText = nextNum;
+
+                renderMasterBoard();
+                speakAmharic(`ቁጥር ${getAmharicNumWord(nextNum)}`);
+            }, speed);
+        }
+
+        function renderChatMessages() {
+            const chatList = document.getElementById('chat-messages-list');
+            if(!chatList) return;
+            chatList.innerHTML = chatMessages.map(m => `
+                <div class="text-[11px] leading-relaxed">
+                    <strong class="text-amber-400">${m.user}:</strong> <span class="text-slate-200">${m.text}</span>
+                </div>
+            `).join('');
+            chatList.scrollTop = chatList.scrollHeight;
+        }
+
+        window.sendChatMessage = () => {
+            const input = document.getElementById('chat-input-msg');
+            const txt = input.value.trim();
+            if(!txt) return;
+            if(!currentUser) return openAuthModal();
+
+            chatMessages.push({ user: currentUser.username, text: txt });
+            if(chatMessages.length > 50) chatMessages.shift();
+            localStorage.setItem('ash_chat_msgs', JSON.stringify(chatMessages));
+            input.value = '';
+            renderChatMessages();
+        };
+
+        function renderMyCartelaCards() {
+            const container = document.getElementById('arena-my-cartelas');
+            container.innerHTML = selectedCartelas.map(id => `
+                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+                    <span class="text-xs font-bold text-brand-400">ካርቴላ #${id} (${gameSettings.winningType})</span>
+                    <div class="grid grid-cols-5 gap-1 text-center text-xs">
+                        ${Array.from({length: 25}, (_, i) => {
+                            const val = i===12 ? '★' : (id*3+i)%75+1;
+                            return `<div class="h-8 bg-slate-900 border border-slate-800 rounded flex items-center justify-center font-bold text-slate-300">${val}</div>`;
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMasterBoard() {
+            const mb = document.getElementById('master-board');
+            if(!mb) return;
+            mb.innerHTML = '';
+            for (let i = 1; i <= 75; i++) {
+                const called = calledBalls.includes(i);
+                mb.innerHTML += `<div class="h-6 rounded font-bold flex items-center justify-center ${called ? 'bg-brand-500 text-slate-950' : 'bg-slate-800 text-slate-500'}">${i}</div>`;
+            }
+        }
+
+        window.speakCurrentBall = () => {
+            const lastBall = calledBalls[calledBalls.length - 1] || 12;
+            speakAmharic(`ቁጥር ${getAmharicNumWord(lastBall)}`);
+        };
+
+        window.claimBingo = () => {
+            if (gameInterval) clearInterval(gameInterval);
+            const win = selectedCartelas.length * selectedRoom.price * 20 * 0.975;
+            currentUser.balance += win;
+            updateUserSession();
+            speakAmharic("እንኳን ደስ አለዎት! ቢንጎ አሸንፈዋል!");
+            alert(`🎉 BINGO! (${gameSettings.winningType}) አሸንፈዋል! ${win.toFixed(2)} ብር ተሸልመዋል!`);
+            switchNavTab('home');
+        };
+
+        function updateUserSession() {
+            localStorage.setItem('ash_current_user', JSON.stringify(currentUser));
+            const idx = dbUsers.findIndex(u => u.username === currentUser.username);
+            if (idx > -1) { dbUsers[idx] = currentUser; localStorage.setItem('ash_users', JSON.stringify(dbUsers)); }
+            renderAuthHeader();
+        }
+
+        window.openOwnerModal = () => document.getElementById('modal-owner').classList.remove('hidden');
+        window.closeOwnerModal = () => {
+            document.getElementById('modal-owner').classList.add('hidden');
+            document.getElementById('owner-login-screen').classList.remove('hidden');
+            document.getElementById('owner-dashboard-content').classList.add('hidden');
+            document.getElementById('owner-user-input').value = '';
+            document.getElementById('owner-pass-input').value = '';
+        };
+
+        window.verifyOwnerLogin = () => {
+            const u = document.getElementById('owner-user-input').value.trim();
+            const p = document.getElementById('owner-pass-input').value.trim();
+            if ((u === 'owner' && p === ownerPass) || dbUsers.some(x => x.username === u && x.password === p && (x.role === 'Admin' || x.role === 'Cashier'))) {
+                document.getElementById('owner-login-screen').classList.add('hidden');
+                document.getElementById('owner-dashboard-content').classList.remove('hidden');
+                
+                document.getElementById('admin-win-type-select').value = gameSettings.winningType;
+                document.getElementById('admin-caller-speed-select').value = gameSettings.callerSpeed;
+
+                renderOwnerAnalytics();
+                speakAmharic("ወደ ባለቤት እና አድሚን ዳሽቦርድ ገብተዋል");
+            } else {
+                alert('የባለቤት ወይም የአድሚን መለያ ስህተት ነው።');
+            }
+        };
+
+        window.saveAdminGameSettings = () => {
+            const winType = document.getElementById('admin-win-type-select').value;
+            const speed = document.getElementById('admin-caller-speed-select').value;
+
+            gameSettings.winningType = winType;
+            gameSettings.callerSpeed = parseInt(speed);
+            localStorage.setItem('ash_game_settings', JSON.stringify(gameSettings));
+
+            alert(`የጨዋታ ቅንብሮች ተስተካክለዋል!\n• አሸናፊነት: ${winType}\n• የጥሪ ፍጥነት: ${speed}ms`);
+        };
+
+        function renderOwnerAnalytics() {
+            let totalDep = dbTransactions.filter(t => t.type === 'Deposit' && t.status === 'Approved').reduce((acc, t) => acc + t.amount, 0);
+            let totalPay = dbTransactions.filter(t => t.type === 'Withdrawal' && t.status === 'Approved').reduce((acc, t) => acc + t.amount, 0);
+            
+            document.getElementById('stat-deposits').innerText = totalDep.toLocaleString() + ' ETB';
+            document.getElementById('stat-payouts').innerText = totalPay.toLocaleString() + ' ETB';
+            document.getElementById('stat-profit').innerText = (totalDep - totalPay).toLocaleString() + ' ETB';
+            document.getElementById('stat-commission').innerText = ownerCommission.toFixed(2) + ' ETB';
+
+            const txList = document.getElementById('owner-txs-list');
+            const pendingTxs = dbTransactions.filter(t => t.status === 'Pending');
+            if(pendingTxs.length === 0) {
+                txList.innerHTML = `<p class="text-slate-500 text-xs">ምንም የሚጠብቅ የገንዘብ ጥያቄ የለም።</p>`;
+            } else {
+                txList.innerHTML = pendingTxs.map(t => `
+                    <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
+                        <div>
+                            <strong>${t.type}</strong> (${t.method || 'Bank/Telebirr'}) - ተጫዋች: <span class="text-white">${t.user}</span><br>
+                            <span class="text-amber-400 font-bold">${t.amount} ETB</span> • ማረጋገጫ: <strong class="text-emerald-400">${t.ref}</strong>
+                        </div>
+                        <button onclick="approveTx(${t.id})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-white font-bold">ክፍያ አረጋግጥ</button>
+                    </div>
+                `).join('');
+            }
+
+            const list = document.getElementById('owner-users-list');
+            list.innerHTML = dbUsers.map(u => `
+                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
+                    <div>
+                        <strong>${u.fullname}</strong> (${u.username}) • <span class="text-brand-400">[${u.role || 'Player'}]</span><br>
+                        <span class="text-slate-400">ስልክ: ${u.phone}</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-amber-400 font-bold">${u.balance.toFixed(2)} ብር</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.approveTx = (id) => {
+            const tx = dbTransactions.find(t => t.id === id);
+            if(tx) {
+                tx.status = 'Approved';
+                if(tx.type === 'Deposit') {
+                    const u = dbUsers.find(x => x.username === tx.user);
+                    if(u) u.balance += tx.amount;
+                }
+                localStorage.setItem('ash_txs', JSON.stringify(dbTransactions));
+                localStorage.setItem('ash_users', JSON.stringify(dbUsers));
+                renderOwnerAnalytics();
+                alert(`የክፍያ ጥያቄው ጸድቋል!`);
+            }
+        };
+    </script>
+</body>
+</html>
